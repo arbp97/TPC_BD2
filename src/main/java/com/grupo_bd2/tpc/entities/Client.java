@@ -11,11 +11,11 @@ public class Client {
     private String name;
     private String surname;
     private String medicalInsurer;
-    private int affiliateNumber;
+    private String affiliateNumber;
 
     public Client() {}
 
-    public Client(Address address, int dni, String name, String surname, String medicalInsurer, int affiliateNumber) {
+    public Client(Address address, int dni, String name, String surname, String medicalInsurer, String affiliateNumber) {
 
         this.address = address;
         this.dni = dni;
@@ -73,11 +73,11 @@ public class Client {
         this.medicalInsurer = medicalInsurer;
     }
 
-    public int getAffiliateNumber() {
+    public String getAffiliateNumber() {
         return this.affiliateNumber;
     }
 
-    public void setAffiliateNumber(int affiliateNumber) {
+    public void setAffiliateNumber(String affiliateNumber) {
         this.affiliateNumber = affiliateNumber;
     }
 
