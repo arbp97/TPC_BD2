@@ -14,48 +14,50 @@ import com.mongodb.client.MongoCollection;
 
 public class ClientService {
 
-    private static ClientService clientService = null;
-    private MongoCollection<Client> clientCollection = Config.getInstance().getMongoDatabase().getCollection("clients", Client.class);
+  private static ClientService clientService;
+  private MongoCollection<Client> clientCollection = Config.getInstance().getMongoDatabase().getCollection("clients", Client.class);
 
-    public static ClientService getInstance() {
+  public static ClientService getInstance() {
 
-        if(clientService==null) {
-            clientService = new ClientService();
-        }
-
-        return clientService;
+    if (clientService == null) {
+      clientService = new ClientService();
     }
 
-    public void insertOne(Client client) {
+    return clientService;
+  }
 
-        clientCollection.insertOne(client);
-    }
+  public void insertOne(Client client) {
 
-    public List<Client> findAll() {
+    clientCollection.insertOne(client);
+  }
 
-        List<Client> clients = new ArrayList<Client>();
+  public List<Client> findAll() {
 
-        clientCollection.find().into(clients);
+    List<Client> clients = new ArrayList<Client>();
 
-        return clients;
-    }
+    clientCollection.find().into(clients);
 
-    public Client findByDni(int dni) {return null;}
+    return clients;
+  }
 
-    public String exportAll() throws IOException {
+  public Client findByDni(int dni) {
+    return null;
+  }
 
-        Gson gson = new GsonBuilder()
+  public String exportAll() throws IOException {
+
+    Gson gson = new GsonBuilder()
         .setPrettyPrinting()
         .create();
-        String json = null;
-        Writer writer = new FileWriter("clients.json");
+    String json = null;
+    Writer writer = new FileWriter("clients.json");
 
-        gson.toJson(findAll(), writer);
-        writer.flush();
-        writer.close();
-        json = gson.toJson(findAll());
+    gson.toJson(findAll(), writer);
+    writer.flush();
+    writer.close();
+    json = gson.toJson(findAll());
 
-        return json;
-    }
+    return json;
+  }
 
 }

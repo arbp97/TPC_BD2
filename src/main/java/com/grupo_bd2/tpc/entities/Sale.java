@@ -10,95 +10,96 @@ import org.bson.types.ObjectId;
 
 public class Sale {
 
-    private ObjectId id;
-    private Employee salesman;
-    private Employee cashier;
-    private LocalDateTime date;
-    private long ticketNumber;
-    private float total;
-    private String paymentMethod;
-    private Set<Item> items;
+  private ObjectId id;
+  private Employee salesman;
+  private Employee cashier;
+  private LocalDateTime date;
+  private long ticketNumber;
+  private float total;
+  private String paymentMethod;
+  private Set<Item> items;
 
-    public Sale() {}
+  public Sale() {
+  }
 
-    public Sale(Employee salesman, Employee cashier, LocalDateTime date, long ticketNumber, String paymentMethod) {
+  public Sale(Employee salesman, Employee cashier, LocalDateTime date, long ticketNumber, String paymentMethod) {
 
-        this.salesman = salesman;
-        this.cashier = cashier;
-        this.date = date;
-        this.ticketNumber = ticketNumber;
-        this.total = 0;
-        this.paymentMethod = paymentMethod;
-        this.items = new HashSet<Item>();
-    }
+    this.salesman = salesman;
+    this.cashier = cashier;
+    this.date = date;
+    this.ticketNumber = ticketNumber;
+    this.total = 0;
+    this.paymentMethod = paymentMethod;
+    this.items = new HashSet<Item>();
+  }
 
-    public ObjectId getId() {
-        return this.id;
-    }
+  public ObjectId getId() {
+    return this.id;
+  }
 
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
+  public void setId(ObjectId id) {
+    this.id = id;
+  }
 
-    public Employee getSalesman() {
-        return this.salesman;
-    }
+  public Employee getSalesman() {
+    return this.salesman;
+  }
 
-    public void setSalesman(Employee salesman) {
-        this.salesman = salesman;
-    }
+  public void setSalesman(Employee salesman) {
+    this.salesman = salesman;
+  }
 
-    public Employee getCashier() {
-        return this.cashier;
-    }
+  public Employee getCashier() {
+    return this.cashier;
+  }
 
-    public void setCashier(Employee cashier) {
-        this.cashier = cashier;
-    }
+  public void setCashier(Employee cashier) {
+    this.cashier = cashier;
+  }
 
-    public LocalDateTime getDate() {
-        return this.date;
-    }
+  public LocalDateTime getDate() {
+    return this.date;
+  }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
+  public void setDate(LocalDateTime date) {
+    this.date = date;
+  }
 
-    public long getTicketNumber() {
-        return this.ticketNumber;
-    }
+  public long getTicketNumber() {
+    return this.ticketNumber;
+  }
 
-    public void setTicketNumber(long ticketNumber) {
-        this.ticketNumber = ticketNumber;
-    }
+  public void setTicketNumber(long ticketNumber) {
+    this.ticketNumber = ticketNumber;
+  }
 
-    public float getTotal() {
-        return this.total;
-    }
+  public float getTotal() {
+    return this.total;
+  }
 
-    public void setTotal(float total) {
-        this.total = total;
-    }
+  public void setTotal(float total) {
+    this.total = total;
+  }
 
-    public String getPaymentMethod() {
-        return this.paymentMethod;
-    }
+  public String getPaymentMethod() {
+    return this.paymentMethod;
+  }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
+  public void setPaymentMethod(String paymentMethod) {
+    this.paymentMethod = paymentMethod;
+  }
 
-    public Set<Item> getItems() {
-        return this.items;
-    }
+  public Set<Item> getItems() {
+    return this.items;
+  }
 
-    public void setItems(Set<Item> items) {
-        this.items = items;
-    }
+  public void setItems(Set<Item> items) {
+    this.items = items;
+  }
 
-    public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
+  public String toString() {
+    Gson gson = new Gson();
+    return gson.toJson(this);
+  }
 
 }

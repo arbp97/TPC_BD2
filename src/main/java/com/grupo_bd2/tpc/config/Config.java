@@ -2,6 +2,7 @@ package com.grupo_bd2.tpc.config;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
@@ -15,58 +16,62 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class Config {
 
-    private String dbUri;
-    private String dbName;
-    private MongoClient mongoClient;
-    private MongoDatabase mongoDatabase;
-    private static Config config = null;
+  private String dbUri;
+  private String dbName;
+  private MongoClient mongoClient;
+  private MongoDatabase mongoDatabase;
+  private static Config config = null;
 
-    public static Config getInstance() {
+  public static Config getInstance() {
 
-        if(config==null) {
-            config = new Config();
-        }
-
-        return config;
+    if (config == null) {
+      config = new Config();
     }
 
-    private Config() {
+    return config;
+  }
 
-        Logger.getLogger("org.mongodb.driver").setLevel(Level.OFF);
+  private Config() {
 
-        this.dbUri = "mongodb://localhost:27017";
-        this.dbName = "tpc_db";
+    Logger.getLogger("org.mongodb.driver").setLevel(Level.OFF);
 
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+    this.dbUri = "mongodb://localhost:27017";
+    this.dbName = "tpc_db";
 
-                MongoClientSettings settings = MongoClientSettings.builder()
-                .codecRegistry(pojoCodecRegistry)
-                .build();
+    CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+        fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-        this.mongoClient = MongoClients.create(settings);
-        this.mongoDatabase = mongoClient.getDatabase(this.dbName);
+    MongoClientSettings settings = MongoClientSettings.builder()
+        .codecRegistry(pojoCodecRegistry)
+        .build();
 
-    }
+    this.mongoClient = MongoClients.create(settings);
+    this.mongoDatabase = mongoClient.getDatabase(this.dbName);
+  }
 
-    public String getDbUri() {
-        return dbUri;
-    }
-    public void setDbUri(String dbName) {
-        this.dbName = dbName;
-    }
-    public String getDbName() {
-        return dbName;
-    }
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
-    }
-    public MongoClient getMongoClient() {
-        return this.mongoClient;
-    }
-    public MongoDatabase getMongoDatabase() {
-        return this.mongoDatabase;
-    }
+  public String getDbUri() {
+    return dbUri;
+  }
+
+  public void setDbUri(String dbName) {
+    this.dbName = dbName;
+  }
+
+  public String getDbName() {
+    return dbName;
+  }
+
+  public void setDbName(String dbName) {
+    this.dbName = dbName;
+  }
+
+  public MongoClient getMongoClient() {
+    return this.mongoClient;
+  }
+
+  public MongoDatabase getMongoDatabase() {
+    return this.mongoDatabase;
+  }
 
 
 }
