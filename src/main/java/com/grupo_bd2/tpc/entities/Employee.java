@@ -8,7 +8,7 @@ public class Employee {
 
   private ObjectId id;
   private Address address;
-  private String store;
+  private ObjectId store;
   private Boolean isManager;
   private long cuil;
   private int dni;
@@ -20,7 +20,7 @@ public class Employee {
   public Employee() {
   }
 
-  public Employee(Address address, String store, Boolean isManager, long cuil, int dni, String name, String surname, String medicalInsurer, int affiliateNumber) {
+  public Employee(Address address,ObjectId store, Boolean isManager, long cuil, int dni, String name, String surname, String medicalInsurer, int affiliateNumber) {
 
     this.address = address;
     this.store = store;
@@ -49,11 +49,11 @@ public class Employee {
     this.address = address;
   }
 
-  public String getStore() {
+  public ObjectId getStore() {
     return this.store;
   }
 
-  public void setStore(String store) {
+  public void setStore(ObjectId store) {
     this.store = store;
   }
 

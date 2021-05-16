@@ -5,7 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
 import com.grupo_bd2.tpc.entities.Address;
 import com.grupo_bd2.tpc.entities.Store;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import org.bson.Document;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,9 +31,16 @@ public class StoreService {
     return storeService;
   }
 
-  public void insertOne(Store store) {
+  public Store insertOne(Store store) {
 
     StoreCollection.insertOne(store);
+
+    return StoreCollection.find().sort(new BasicDBObject("_id", -1)).first(); //retorna el ultimo documento creado.
+  }
+
+  public void update(Store store) {
+
+    StoreCollection.updateOne(Filters.eq("_id", store.getId()), Updates.set("employees", store.getEmployees()));
   }
 
   public List<Store> findAll() {

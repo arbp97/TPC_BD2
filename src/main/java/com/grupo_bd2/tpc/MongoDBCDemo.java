@@ -2,32 +2,15 @@ package com.grupo_bd2.tpc;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.grupo_bd2.tpc.config.*;
 import com.grupo_bd2.tpc.entities.*;
 import com.grupo_bd2.tpc.services.*;
-import com.mongodb.*;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.result.*;
-import com.mongodb.internal.async.SingleResultCallback;
-
-import org.bson.Document;
+import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
 
-import java.time.LocalDateTime;
-import java.util.*;
 import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MongoDBCDemo {
@@ -64,19 +47,21 @@ public class MongoDBCDemo {
 
     Set<Employee> listEmployee = new HashSet<Employee>();
     Store storeOne = new Store(addressFour, 231521);
+    Store lastStore=StoreService.getInstance().insertOne(storeOne);
 
-
-    Employee employeeOne = new Employee(addressTwo, "storeOne", true, 23152323510L, 152323510,
+    Employee employeeOne = new Employee(addressTwo,lastStore.getId(), true, 23152323510L, 152323510,
         "Juan", "Perez", "OSDE", 23021015);
-    Employee employeeTwo = new Employee(addressThree, "storeOne", false, 23193265120L, 19326512,
+    Employee employeeTwo = new Employee(addressThree,lastStore.getId(), false, 23193265120L, 19326512,
         "Pablo", "Rodriguez", "OSDE", 3320120);
 
     EmployeeService.getInstance().insertOne(employeeOne);
     EmployeeService.getInstance().insertOne(employeeTwo);
     listEmployee.add(employeeOne);
     listEmployee.add(employeeTwo);
-    storeOne.setEmployees(listEmployee);
-    StoreService.getInstance().insertOne(storeOne);
+    lastStore.setEmployees(listEmployee);
+    StoreService.getInstance().update(lastStore);
+
+
 
     Set<Item> listItem = new HashSet<Item>();
     Item itemOne = new Item("Bayaspirina", 200f, "Bayer", true);
