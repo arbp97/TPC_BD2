@@ -3,9 +3,10 @@ package com.grupo_bd2.tpc.services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
-import com.grupo_bd2.tpc.entities.Client;
 import com.grupo_bd2.tpc.entities.Employee;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.IndexOptions;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.List;
 public class EmployeeService {
 
   private static EmployeeService employeeService;
-  private MongoCollection<Employee> employeeCollection = Config.getInstance().getMongoDatabase().getCollection("employee", Employee.class);
+  private MongoCollection<Employee> employeeCollection = Config.getInstance().getMongoDatabase().getCollection("employees", Employee.class);
 
   public static EmployeeService getInstance() {
 
@@ -27,7 +28,21 @@ public class EmployeeService {
     return employeeService;
   }
 
-  public void insertOne(Employee employee) {
+  public void createUniqueIndex() {
+
+    /*
+    se crea un index unico para no cargar documentos duplicados
+    */
+
+    BasicDBObject obj = new BasicDBObject();
+
+    //se cargan los campos sobre los cuales el index va a chequear
+    obj.put("dni", 1);
+
+    employeeCollection.createIndex(obj, new IndexOptions().unique(true));
+  }
+
+  public void insert(Employee employee) {
 
     employeeCollection.insertOne(employee);
   }
@@ -51,7 +66,7 @@ public class EmployeeService {
         .setPrettyPrinting()
         .create();
     String json = null;
-    Writer writer = new FileWriter("employee.json");
+    Writer writer = new FileWriter("employees.json");
 
     gson.toJson(findAll(), writer);
     writer.flush();

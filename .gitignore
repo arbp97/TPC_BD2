@@ -8,3 +8,11 @@ buildNumber.properties
 lib/*
 .settings/*
 .vscode/*
+addresses.json
+stores.json
+items.json
+clients.json
+sales.json
+employees.json
+saleDetails.json
+

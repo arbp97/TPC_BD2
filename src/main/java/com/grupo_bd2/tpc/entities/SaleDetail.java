@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 public class SaleDetail {
 
   private ObjectId id;
-  private Sale sale;
+  private ObjectId sale;
   private Item item;
   private float total;
   private int quantity;
@@ -15,7 +15,7 @@ public class SaleDetail {
   public SaleDetail() {
   }
 
-  public SaleDetail(Sale sale, Item item, int quantity) {
+  public SaleDetail(ObjectId sale, Item item, int quantity) {
 
     this.sale = sale;
     this.item = item;
@@ -31,11 +31,11 @@ public class SaleDetail {
     this.id = id;
   }
 
-  public Sale getSale() {
+  public ObjectId getSale() {
     return this.sale;
   }
 
-  public void setSale(Sale sale) {
+  public void setSale(ObjectId sale) {
     this.sale = sale;
   }
 

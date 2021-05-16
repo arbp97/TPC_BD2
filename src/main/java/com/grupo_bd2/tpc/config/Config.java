@@ -6,8 +6,10 @@ import java.util.logging.Logger;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-
+import com.grupo_bd2.tpc.services.AddressService;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoWriteException;
+
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
@@ -21,6 +23,7 @@ public class Config {
   private MongoClient mongoClient;
   private MongoDatabase mongoDatabase;
   private static Config config = null;
+  private String status;
 
   public static Config getInstance() {
 
@@ -47,6 +50,10 @@ public class Config {
 
     this.mongoClient = MongoClients.create(settings);
     this.mongoDatabase = mongoClient.getDatabase(this.dbName);
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    this.status = "STATUS: OK";
   }
 
   public String getDbUri() {
@@ -73,5 +80,8 @@ public class Config {
     return this.mongoDatabase;
   }
 
+  public String getStatus() {
+    return this.status;
+  }
 
 }

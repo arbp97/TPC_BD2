@@ -10,7 +10,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
 import com.grupo_bd2.tpc.entities.Client;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.IndexOptions;
 
 public class ClientService {
 
@@ -26,7 +28,21 @@ public class ClientService {
     return clientService;
   }
 
-  public void insertOne(Client client) {
+  public void createUniqueIndex() {
+
+    /*
+    se crea un index unico para no cargar documentos duplicados
+    */
+
+    BasicDBObject obj = new BasicDBObject();
+
+    //se cargan los campos sobre los cuales el index va a chequear
+    obj.put("dni", 1);
+
+    clientCollection.createIndex(obj, new IndexOptions().unique(true));
+  }
+
+  public void insert(Client client) {
 
     clientCollection.insertOne(client);
   }

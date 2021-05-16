@@ -3,13 +3,12 @@ package com.grupo_bd2.tpc.services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
-import com.grupo_bd2.tpc.entities.Address;
 import com.grupo_bd2.tpc.entities.Store;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Updates;
-import org.bson.Document;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,7 +19,7 @@ import java.util.List;
 public class StoreService {
 
   private static StoreService storeService;
-  private MongoCollection<Store> StoreCollection = Config.getInstance().getMongoDatabase().getCollection("store", Store.class);
+  private MongoCollection<Store> StoreCollection = Config.getInstance().getMongoDatabase().getCollection("stores", Store.class);
 
   public static StoreService getInstance() {
 
@@ -31,11 +30,28 @@ public class StoreService {
     return storeService;
   }
 
-  public Store insertOne(Store store) {
+  public void createUniqueIndex() {
 
-    StoreCollection.insertOne(store);
+    /*
+    se crea un index unico para no cargar documentos duplicados
+    */
 
-    return StoreCollection.find().sort(new BasicDBObject("_id", -1)).first(); //retorna el ultimo documento creado.
+    BasicDBObject obj = new BasicDBObject();
+
+    //se cargan los campos sobre los cuales el index va a chequear
+    obj.put("date", 1);
+    obj.put("ticketNumber", 1);
+
+    StoreCollection.createIndex(obj, new IndexOptions().unique(true));
+  }
+
+  public Store insert(Store store) {
+
+    //se inserta la store y se consigue el ObjectId generado por Mongo, para devolver la misma
+    //store con su id correspondiente.
+    store.setId(StoreCollection.insertOne(store).getInsertedId().asObjectId().getValue());
+
+    return store;
   }
 
   public void update(Store store) {
@@ -58,7 +74,7 @@ public class StoreService {
         .setPrettyPrinting()
         .create();
     String json = null;
-    Writer writer = new FileWriter("store.json");
+    Writer writer = new FileWriter("stores.json");
 
     gson.toJson(findAll(), writer);
     writer.flush();

@@ -17,7 +17,7 @@ public class Sale {
   private long ticketNumber;
   private float total;
   private String paymentMethod;
-  private Set<Item> items;
+  private Set<SaleDetail> details;
 
   public Sale() {
   }
@@ -30,7 +30,7 @@ public class Sale {
     this.ticketNumber = ticketNumber;
     this.total = 0;
     this.paymentMethod = paymentMethod;
-    this.items = new HashSet<Item>();
+    this.details = new HashSet<SaleDetail>();
   }
 
   public ObjectId getId() {
@@ -89,12 +89,12 @@ public class Sale {
     this.paymentMethod = paymentMethod;
   }
 
-  public Set<Item> getItems() {
-    return this.items;
+  public Set<SaleDetail> getDetails() {
+    return this.details;
   }
 
-  public void setItems(Set<Item> items) {
-    this.items = items;
+  public void setDetails(Set<SaleDetail> details) {
+    this.details = details;
   }
 
   public String toString() {
