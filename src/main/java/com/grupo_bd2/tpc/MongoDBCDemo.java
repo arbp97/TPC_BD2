@@ -81,7 +81,13 @@ public class MongoDBCDemo {
 
     Set<Employee> listEmployee = new HashSet<Employee>();
     Store storeOne = new Store(addressFour, 231521);
-    Store lastStore=StoreService.getInstance().insert(storeOne);
+    Store lastStore = new Store();
+    try {
+      lastStore=StoreService.getInstance().insert(storeOne);
+    } catch (MongoWriteException e) {
+      System.out.println(e.getMessage());
+    }
+
 
     Employee employeeOne = new Employee(addressTwo,lastStore.getId(), true, 23152323510L, 152323510,
         "Juan", "Perez", "OSDE", 23021015);
@@ -134,48 +140,54 @@ public class MongoDBCDemo {
       System.out.println(e.getMessage());
     }
 
+    try { //JSON con todos los datos de la base de datos
+      Config.getInstance().exportDatabase();
+    } catch (IOException e) {
+      System.out.println(e.getMessage());
+    }
 
+    /*
     try {
-      System.out.println(ClientService.getInstance().exportAll());
+      System.out.println(ClientService.getInstance().exportAll(true));
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
 
     try {
-      System.out.println(AddressService.getInstance().exportAll());
+      System.out.println(AddressService.getInstance().exportAll(true));
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
 
     try {
-      System.out.println(StoreService.getInstance().exportAll());
+      System.out.println(StoreService.getInstance().exportAll(true));
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
 
     try {
-      System.out.println(EmployeeService.getInstance().exportAll());
+      System.out.println(EmployeeService.getInstance().exportAll(true));
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
 
     try {
-      System.out.println(ItemService.getInstance().exportAll());
+      System.out.println(ItemService.getInstance().exportAll(true));
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
 
     try {
-      System.out.println(SaleService.getInstance().exportAll());
+      System.out.println(SaleService.getInstance().exportAll(true));
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
 
     try {
-      System.out.println(SaleDetailService.getInstance().exportAll());
+      System.out.println(SaleDetailService.getInstance().exportAll(true));
     } catch (IOException e) {
       System.out.println(e.getMessage());
     }
-
+    */
   }
 }

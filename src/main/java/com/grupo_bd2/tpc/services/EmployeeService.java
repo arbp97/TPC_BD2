@@ -60,18 +60,24 @@ public class EmployeeService {
     return null;
   }
 
-  public String exportAll() throws IOException {
+  public String exportAll(Boolean write) throws IOException {
 
     Gson gson = new GsonBuilder()
         .setPrettyPrinting()
         .create();
     String json = null;
-    Writer writer = new FileWriter("employees.json");
 
-    gson.toJson(findAll(), writer);
-    writer.flush();
-    writer.close();
     json = gson.toJson(findAll());
+
+    if(write) {
+
+      Writer writer = new FileWriter("employees.json");
+
+      gson.toJson(findAll(), writer);
+      writer.flush();
+      writer.close();
+
+    }
 
     return json;
   }

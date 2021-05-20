@@ -1,12 +1,19 @@
 package com.grupo_bd2.tpc.config;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import com.grupo_bd2.tpc.services.AddressService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.grupo_bd2.tpc.services.*;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoWriteException;
 
@@ -54,6 +61,29 @@ public class Config {
     //////////////////////////////////////////////////////////////////////////////////
 
     this.status = "STATUS: OK";
+  }
+
+  public void exportDatabase() throws IOException {
+
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+    Writer writer = new FileWriter("tpc_db.json");
+    List<Object> objects = new ArrayList<Object>();
+
+    objects.addAll(AddressService.getInstance().findAll());
+    objects.addAll(ClientService.getInstance().findAll());
+    objects.addAll(EmployeeService.getInstance().findAll());
+    objects.addAll(ItemService.getInstance().findAll());
+    objects.addAll(SaleService.getInstance().findAll());
+    objects.addAll(SaleDetailService.getInstance().findAll());
+    objects.addAll(StoreService.getInstance().findAll());
+
+      gson.toJson(objects, writer);
+
+      writer.flush();
+      writer.close();
+
   }
 
   public String getDbUri() {
