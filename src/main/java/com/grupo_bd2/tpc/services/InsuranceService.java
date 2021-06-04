@@ -3,7 +3,7 @@ package com.grupo_bd2.tpc.services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
-import com.grupo_bd2.tpc.entities.Address;
+import com.grupo_bd2.tpc.entities.Insurance;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
@@ -15,18 +15,18 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddressService {
+public class InsuranceService {
 
-  private static AddressService addressService;
-  private MongoCollection<Address> AddressCollection = Config.getInstance().getMongoDatabase().getCollection("addresses", Address.class);
+  private static InsuranceService insuranceService;
+  private MongoCollection<Insurance> insuranceCollection = Config.getInstance().getMongoDatabase().getCollection("insurances", Insurance.class);
 
-  public static AddressService getInstance() {
+  public static InsuranceService getInstance() {
 
-    if (addressService == null) {
-      addressService = new AddressService();
+    if (insuranceService == null) {
+      insuranceService = new InsuranceService();
     }
 
-    return addressService;
+    return insuranceService;
   }
 
   public void createUniqueIndex() {
@@ -38,26 +38,24 @@ public class AddressService {
     BasicDBObject obj = new BasicDBObject();
 
     //se cargan los campos sobre los cuales el index va a chequear
-    obj.put("street", 1);
-    obj.put("number", 1);
-    obj.put("city", 1);
-    obj.put("province", 1);
+    obj.put("name", 1);
+    obj.put("insuranceCode", 1);
 
-    AddressCollection.createIndex(obj, new IndexOptions().unique(true));
+    insuranceCollection.createIndex(obj, new IndexOptions().unique(true));
 }
 
-  public void insert(Address address) throws MongoWriteException{
+  public void insert(Insurance insurance) throws MongoWriteException{
 
-    AddressCollection.insertOne(address);
+    insuranceCollection.insertOne(insurance);
   }
 
-  public List<Address> findAll() {
+  public List<Insurance> findAll() {
 
-    List<Address> addresses = new ArrayList<Address>();
+    List<Insurance> insurances = new ArrayList<Insurance>();
 
-    AddressCollection.find().into(addresses);
+    insuranceCollection.find().into(insurances);
 
-    return addresses;
+    return insurances;
   }
 
   public String exportAll(Boolean write) throws IOException {
@@ -71,7 +69,7 @@ public class AddressService {
 
     if(write) {
 
-      Writer writer = new FileWriter("addresses.json");
+      Writer writer = new FileWriter("insurances.json");
 
       gson.toJson(findAll(), writer);
       writer.flush();

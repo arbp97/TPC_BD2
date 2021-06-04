@@ -9,23 +9,23 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
-import com.grupo_bd2.tpc.entities.Client;
+import com.grupo_bd2.tpc.entities.Person;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 
-public class ClientService {
+public class PersonService {
 
-  private static ClientService clientService;
-  private MongoCollection<Client> clientCollection = Config.getInstance().getMongoDatabase().getCollection("clients", Client.class);
+  private static PersonService personService;
+  private MongoCollection<Person> personCollection = Config.getInstance().getMongoDatabase().getCollection("persons", Person.class);
 
-  public static ClientService getInstance() {
+  public static PersonService getInstance() {
 
-    if (clientService == null) {
-      clientService = new ClientService();
+    if (personService == null) {
+      personService = new PersonService();
     }
 
-    return clientService;
+    return personService;
   }
 
   public void createUniqueIndex() {
@@ -39,24 +39,24 @@ public class ClientService {
     //se cargan los campos sobre los cuales el index va a chequear
     obj.put("dni", 1);
 
-    clientCollection.createIndex(obj, new IndexOptions().unique(true));
+    personCollection.createIndex(obj, new IndexOptions().unique(true));
   }
 
-  public void insert(Client client) {
+  public void insert(Person client) {
 
-    clientCollection.insertOne(client);
+    personCollection.insertOne(client);
   }
 
-  public List<Client> findAll() {
+  public List<Person> findAll() {
 
-    List<Client> clients = new ArrayList<Client>();
+    List<Person> clients = new ArrayList<Person>();
 
-    clientCollection.find().into(clients);
+    personCollection.find().into(clients);
 
     return clients;
   }
 
-  public Client findByDni(int dni) {
+  public Person findByDni(int dni) {
     return null;
   }
 

@@ -2,10 +2,14 @@ package com.grupo_bd2.tpc.entities;
 
 import com.google.gson.Gson;
 
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 public class Item {
 
+  @BsonProperty("_id")
+  @BsonId
   private ObjectId id;
   private String description;
   private float price;

@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.services.*;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoWriteException;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -71,8 +70,10 @@ public class Config {
     Writer writer = new FileWriter("tpc_db.json");
     List<Object> objects = new ArrayList<Object>();
 
+
+    objects.addAll(InsuranceService.getInstance().findAll());
     objects.addAll(AddressService.getInstance().findAll());
-    objects.addAll(ClientService.getInstance().findAll());
+    objects.addAll(PersonService.getInstance().findAll());
     objects.addAll(EmployeeService.getInstance().findAll());
     objects.addAll(ItemService.getInstance().findAll());
     objects.addAll(SaleService.getInstance().findAll());

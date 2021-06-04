@@ -2,28 +2,32 @@ package com.grupo_bd2.tpc.entities;
 
 import com.google.gson.Gson;
 
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
-public class Client {
+public class Person {
 
+  @BsonProperty("_id")
+  @BsonId
   private ObjectId id;
   private Address address;
+  private Insurance insurance;
   private int dni;
   private String name;
   private String surname;
-  private String medicalInsurer;
   private String affiliateNumber;
 
-  public Client() {
+  public Person() {
   }
 
-  public Client(Address address, int dni, String name, String surname, String medicalInsurer, String affiliateNumber) {
+  public Person(Address address, int dni, String name, String surname, Insurance insurance, String affiliateNumber) {
 
     this.address = address;
     this.dni = dni;
     this.name = name;
     this.surname = surname;
-    this.medicalInsurer = medicalInsurer;
+    this.insurance = insurance;
     this.affiliateNumber = affiliateNumber;
   }
 
@@ -67,12 +71,12 @@ public class Client {
     this.surname = surname;
   }
 
-  public String getMedicalInsurer() {
-    return this.medicalInsurer;
+  public Insurance getInsurance() {
+    return this.insurance;
   }
 
-  public void setMedicalInsurer(String medicalInsurer) {
-    this.medicalInsurer = medicalInsurer;
+  public void setInsurance(Insurance insurance) {
+    this.insurance = insurance;
   }
 
   public String getAffiliateNumber() {

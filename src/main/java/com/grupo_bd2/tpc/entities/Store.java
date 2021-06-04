@@ -5,10 +5,14 @@ import java.util.Set;
 
 import com.google.gson.Gson;
 
+import org.bson.codecs.pojo.annotations.BsonId;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 public class Store {
 
+  @BsonProperty("_id")
+    @BsonId
   private ObjectId id;
   private Address address;
   private int pointOfSaleCode;

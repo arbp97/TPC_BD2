@@ -26,12 +26,13 @@ public class MongoDBCDemo {
 
     //creando los indices unicos... no funciona en config, no se por que, de momento queda aca
     AddressService.getInstance().createUniqueIndex();
-    ClientService.getInstance().createUniqueIndex();
+    PersonService.getInstance().createUniqueIndex();
     EmployeeService.getInstance().createUniqueIndex();
     ItemService.getInstance().createUniqueIndex();
     SaleDetailService.getInstance().createUniqueIndex();
     SaleService.getInstance().createUniqueIndex();
     StoreService.getInstance().createUniqueIndex();
+    InsuranceService.getInstance().createUniqueIndex();
 
 
     Address addressOne = new Address(888, "Erezcano", "Almirante Brown", "Argentina");
@@ -63,21 +64,31 @@ public class MongoDBCDemo {
       System.out.println(e.getMessage());
     }
 
-    Client client = new Client(addressOne, 12345678, "Hello", "Moto", null, null);
-    Client client2 = new Client(addressOne, 87654321, "Bye", "Auto", "OSDE", "1");
+    Insurance insurance1 = new Insurance("OSDE","456781");
+
+    try {
+      InsuranceService.getInstance().insert(insurance1);
+    } catch (MongoWriteException e) {
+      System.out.println(e.getMessage());
+    }
+
+    Person client = new Person(addressOne, 12345678, "Hello", "Moto", null, null);
+    Person client2 = new Person(addressOne, 87654321, "Bye", "Auto", insurance1, "123");
 
 
     try {
-      ClientService.getInstance().insert(client);
+      PersonService.getInstance().insert(client2);
     } catch (MongoWriteException e) {
       System.out.println(e.getMessage());
     }
 
     try {
-      ClientService.getInstance().insert(client2);
+      PersonService.getInstance().insert(client);
     } catch (MongoWriteException e) {
       System.out.println(e.getMessage());
     }
+
+    System.out.println("TEST" + PersonService.getInstance().findAll());
 
     Set<Employee> listEmployee = new HashSet<Employee>();
     Store storeOne = new Store(addressFour, 231521);
@@ -89,10 +100,10 @@ public class MongoDBCDemo {
     }
 
 
-    Employee employeeOne = new Employee(addressTwo,lastStore.getId(), true, 23152323510L, 152323510,
-        "Juan", "Perez", "OSDE", 23021015);
-    Employee employeeTwo = new Employee(addressThree,lastStore.getId(), false, 23193265120L, 19326512,
-        "Pablo", "Rodriguez", "OSDE", 3320120);
+    Employee employeeOne = new Employee(addressTwo,lastStore.getId(), true, "23152323510", 152323510,
+        "Juan", "Perez", insurance1, "23021015");
+    Employee employeeTwo = new Employee(addressThree,lastStore.getId(), false, "23193265120", 19326512,
+        "Pablo", "Rodriguez", insurance1, "3320120");
 
 
     try {
