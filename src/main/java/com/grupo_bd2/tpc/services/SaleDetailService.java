@@ -25,6 +25,8 @@ public class SaleDetailService {
       saleDetailService = new SaleDetailService();
     }
 
+    //saleDetailService.createUniqueIndex();
+
     return saleDetailService;
   }
 
@@ -41,7 +43,7 @@ public class SaleDetailService {
     obj.put("item", 1);
     obj.put("quantity", 1);
 
-    saleDetailCollection.createIndex(obj, new IndexOptions().unique(true));
+    saleDetailCollection.createIndex(obj, new IndexOptions().unique(false));
   }
 
   public SaleDetail insert(SaleDetail saleDetail) {

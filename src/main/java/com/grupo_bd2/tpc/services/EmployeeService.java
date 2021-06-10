@@ -25,6 +25,8 @@ public class EmployeeService {
       employeeService = new EmployeeService();
     }
 
+    employeeService.createUniqueIndex();
+
     return employeeService;
   }
 

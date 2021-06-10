@@ -25,6 +25,8 @@ public class ItemService {
       itemService = new ItemService();
     }
 
+    itemService.createUniqueIndex();
+
     return itemService;
   }
 

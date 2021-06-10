@@ -26,6 +26,8 @@ public class InsuranceService {
       insuranceService = new InsuranceService();
     }
 
+    insuranceService.createUniqueIndex();
+
     return insuranceService;
   }
 

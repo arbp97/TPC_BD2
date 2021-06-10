@@ -23,18 +23,6 @@ public class MongoDBCDemo {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     System.out.println(Config.getInstance().getStatus());
 
-
-    //creando los indices unicos... no funciona en config, no se por que, de momento queda aca
-    AddressService.getInstance().createUniqueIndex();
-    PersonService.getInstance().createUniqueIndex();
-    EmployeeService.getInstance().createUniqueIndex();
-    ItemService.getInstance().createUniqueIndex();
-    SaleDetailService.getInstance().createUniqueIndex();
-    SaleService.getInstance().createUniqueIndex();
-    StoreService.getInstance().createUniqueIndex();
-    InsuranceService.getInstance().createUniqueIndex();
-
-
     Address addressOne = new Address(888, "Erezcano", "Almirante Brown", "Argentina");
     Address addressTwo = new Address(1201, "Irigoyen", "Lanus", "Argentina");
     Address addressThree = new Address(100, "Laprida", "Lomas de zamora", "Argentina");
@@ -115,29 +103,31 @@ public class MongoDBCDemo {
       PersonService.getInstance().insert(client4);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    System.out.println("TEST" + PersonService.getInstance().findAll());
-
     //Set<Employee> listEmployee = new HashSet<Employee>();
     //no tiene sentido aca
     Set<Employee> listEmployeeForStoreOne = new HashSet<Employee>();
     Set<Employee> listEmployeeForStoreTwo = new HashSet<Employee>();
     Store storeOne = new Store(addressFour, 231521);
     Store storeTwo = new Store(addressSix, 999000);
-    Store lastStore = new Store();
+
     try {
-      lastStore=StoreService.getInstance().insert(storeOne);
-      StoreService.getInstance().insert(storeTwo);
+      storeOne=StoreService.getInstance().insert(storeOne);
     } catch (MongoWriteException e) {
       System.out.println(e.getMessage());
     }
 
+    try {
+      storeTwo=StoreService.getInstance().insert(storeTwo);
+    } catch (MongoWriteException e) {
+      System.out.println(e.getMessage());
+    }
 
     //Employee(Address, ObjectId store, Boolean isManager, String cuil, dni, name, surname, Insurance insurance, String affiliateNumber)
-    Employee employeeOne = new Employee(addressTwo, lastStore.getId(), true, "23152323510", 152323510,
+    Employee employeeOne = new Employee(addressTwo, storeOne.getId(), true, "23152323510", 152323510,
         "Juan", "Perez", insurance1, "23021015");
-    Employee employeeTwo = new Employee(addressThree, lastStore.getId(), false, "23193265120", 19326512,
+    Employee employeeTwo = new Employee(addressThree, storeOne.getId(), false, "23193265120", 19326512,
         "Pablo", "Rodriguez", insurance1, "3320120");
-    Employee employeeThree = new Employee(addressFour, storeTwo.getId(), false, "23131415160", 13141516, "Gabe", "Newell", null, null);
+    Employee employeeThree = new Employee(addressOne, storeTwo.getId(), false, "23131415160", 13141516, "Gabe", "Newell", null, null);
     Employee employeeFour = new Employee(addressFive, storeTwo.getId(), false, "23422456320", 42245632, "Axel", "Madagascar", insurance2, "6300");
 
 
@@ -167,12 +157,12 @@ public class MongoDBCDemo {
 
     listEmployeeForStoreOne.add(employeeOne);
     listEmployeeForStoreOne.add(employeeTwo);
-    lastStore.setEmployees(listEmployeeForStoreOne);
+    storeOne.setEmployees(listEmployeeForStoreOne);
     StoreService.getInstance().update(storeOne);
 
     listEmployeeForStoreTwo.add(employeeThree);
     listEmployeeForStoreTwo.add(employeeFour);
-    lastStore.setEmployees(listEmployeeForStoreTwo);
+    storeTwo.setEmployees(listEmployeeForStoreTwo);
     StoreService.getInstance().update(storeTwo);
 
     // public Item(String description, float price, String manufacturer, Boolean isMedicine) {
@@ -231,42 +221,99 @@ public class MongoDBCDemo {
       System.out.println(e.getMessage());
     }
 
-
-    
-
     // vamos de  ompras
     //          c
 
     // SaleDetail(ObjectId sale, Item item, int quantity)
     // Sale(Employee salesman, Employee cashier, LocalDateTime date, long ticketNumber, String paymentMethod)
 
-    Sale saleOne = new Sale(employeeThree, employeeThree, LocalDateTime.now(), 2, "Bisa");
-    SaleDetail detalleOne = new SaleDetail(saleOne.getId(), itemFour, 1);
-    Sale saleTwo = new Sale(employeeOne, employeeTwo, LocalDateTime.now().minusDays(1), 6, "Santander Rie");
+    //TODO - refactorear todos los bloques de sales y details como el primero
+    Sale saleOne = new Sale();
+    SaleDetail detalleOne = new SaleDetail();
+    try {
+      saleOne = SaleService.getInstance().insert(new Sale(client,employeeThree, employeeThree, LocalDateTime.now(), 2, "Bisa"));
+      detalleOne = new SaleDetail(saleOne.getId(), itemFour, 1);
+      saleOne.addDetail(detalleOne);
+      SaleService.getInstance().update(saleOne);
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
+
+    Sale saleTwo = new Sale();
+    try {saleTwo = SaleService.getInstance().insert(new Sale(client,employeeOne, employeeTwo, LocalDateTime.now().minusDays(1), 6, "Santander Rie"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleTwoA = new SaleDetail(saleTwo.getId(), itemTwo, 3);
     SaleDetail detalleTwoB = new SaleDetail(saleTwo.getId(), itemSix, 6);
-    Sale saleThree = new Sale(employeeFour, employeeThree, LocalDateTime.now(), 43, "Mastercarb");
-    SaleDetail detalleThree = new SaleDetail(saleThree.getId(), itemThree, 55);
-    Sale saleFour = new Sale(employeeThree, employeeFour, LocalDateTime.now().minusWeeks(2), 44, "Huesitos de pollo");
+    saleTwo.addDetail(detalleTwoA);
+    saleTwo.addDetail(detalleTwoB);
+    SaleService.getInstance().update(saleTwo);
+
+    Sale saleThree = new Sale();
+    try {saleThree = SaleService.getInstance().insert(new Sale(client2,employeeThree, employeeFour, LocalDateTime.now().minusWeeks(2), 5, "Mercado Pago"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
+    SaleDetail detalleThree = new SaleDetail(saleThree.getId(), itemOne, 12);
+    saleThree.addDetail(detalleThree);
+    SaleService.getInstance().update(saleThree);
+
+    Sale saleFour = new Sale();
+    try {saleFour = SaleService.getInstance().insert(new Sale(client2,employeeThree, employeeFour, LocalDateTime.now().minusWeeks(2), 44, "Huesitos de pollo"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleFour = new SaleDetail(saleFour.getId(), itemSeven, 2);
-    Sale saleFive = new Sale(employeeTwo, employeeOne, LocalDateTime.now().plusDays(1), 45, "Futurepay");
+    saleFour.addDetail(detalleFour);
+    SaleService.getInstance().update(saleFour);
+
+    Sale saleFive = new Sale();
+    try {saleFive = SaleService.getInstance().insert(new Sale(client3,employeeTwo, employeeOne, LocalDateTime.now().plusDays(1), 45, "Futurepay"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleFiveA = new SaleDetail(saleFive.getId(), itemSix, 1);
     SaleDetail detalleFiveB = new SaleDetail(saleFive.getId(), itemSix, 2);
     SaleDetail detalleFiveC = new SaleDetail(saleFive.getId(), itemSix, 4);
-    Sale saleSix = new Sale(employeeTwo, employeeTwo, LocalDateTime.now().minusMinutes(24), 47, "Drogiscard");
+    saleFive.addDetail(detalleFiveA);
+    saleFive.addDetail(detalleFiveB);
+    saleFive.addDetail(detalleFiveC);
+    SaleService.getInstance().update(saleFive);
+
+    Sale saleSix = new Sale();
+    try {saleSix = SaleService.getInstance().insert(new Sale(client3,employeeTwo, employeeTwo, LocalDateTime.now().minusMinutes(24), 47, "Drogiscard"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleSixA = new SaleDetail(saleSix.getId(), itemOne, 3);
     SaleDetail detalleSixB = new SaleDetail(saleSix.getId(), itemThree, 5);
     SaleDetail detalleSixC = new SaleDetail(saleSix.getId(), itemFive, 7);
     SaleDetail detalleSixD = new SaleDetail(saleSix.getId(), itemSeven, 9);
-    Sale saleSeven = new Sale(employeeFour, employeeFour, LocalDateTime.now(), 49, "Tarjeta generica #4");
+    saleSix.addDetail(detalleSixA);
+    saleSix.addDetail(detalleSixB);
+    saleSix.addDetail(detalleSixC);
+    saleSix.addDetail(detalleSixD);
+    SaleService.getInstance().update(saleSix);
+
+    Sale saleSeven = new Sale();
+    try {saleSeven = SaleService.getInstance().insert(new Sale(client3,employeeFour, employeeFour, LocalDateTime.now(), 49, "Tarjeta generica #4"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleSevenA = new SaleDetail(saleSeven.getId(), itemThree, 1);
     SaleDetail detalleSevenB = new SaleDetail(saleSeven.getId(), itemOne, 5000);
-    Sale saleEight = new Sale(employeeOne, employeeOne, LocalDateTime.now(), 51, "Lamborghini Aventador LP 750-4 Superveloce Roadster");
+    saleSeven.addDetail(detalleSevenA);
+    saleSeven.addDetail(detalleSevenB);
+    SaleService.getInstance().update(saleSeven);
+
+    Sale saleEight = new Sale();
+    try {saleEight = SaleService.getInstance().insert(new Sale(client4,employeeOne, employeeOne, 
+      LocalDateTime.now(), 51, "Lamborghini Aventador LP 750-4 Superveloce Roadster"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleEight = new SaleDetail(saleEight.getId(), itemSeven, 92);
-    Sale saleNine = new Sale(employeeOne, employeeTwo, LocalDateTime.now(), 55, "Apreta ALT+F4 para deshabilitar chequeo de errores");
+    saleEight.addDetail(detalleEight);
+    SaleService.getInstance().update(saleEight);
+
+    Sale saleNine = new Sale();
+     try {saleNine = SaleService.getInstance().insert(new Sale(client4,employeeOne, employeeTwo,
+      LocalDateTime.now(), 55, "Apreta ALT+F4 para deshabilitar chequeo de errores"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleNineA = new SaleDetail(saleNine.getId(), itemTwo, 32);
     SaleDetail detalleNineB = new SaleDetail(saleNine.getId(), itemThree, 12);
-    Sale saleTen = new Sale(employeeFour, employeeThree, LocalDateTime.now(), 60, "Noma Meswey");
+    saleNine.addDetail(detalleNineA);
+    saleNine.addDetail(detalleNineB);
+    SaleService.getInstance().update(saleNine);
+
+    Sale saleTen = new Sale();
+    try {saleTen = SaleService.getInstance().insert(new Sale(client4,employeeFour, employeeThree, LocalDateTime.now(), 60, "Noma Meswey"));
+    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleTenA = new SaleDetail(saleTen.getId(), itemOne, 2);
     SaleDetail detalleTenB = new SaleDetail(saleTen.getId(), itemTwo, 4);
     SaleDetail detalleTenC = new SaleDetail(saleTen.getId(), itemThree, 6);
@@ -275,32 +322,32 @@ public class MongoDBCDemo {
     SaleDetail detalleTenF = new SaleDetail(saleTen.getId(), itemSix, 12);
     SaleDetail detalleTenG = new SaleDetail(saleTen.getId(), itemSeven, 14);
     SaleDetail detalleTenH = new SaleDetail(saleTen.getId(), itemOne, 16);
+    saleTen.addDetail(detalleTenA);
+    saleTen.addDetail(detalleTenB);
+    saleTen.addDetail(detalleTenC);
+    saleTen.addDetail(detalleTenD);
+    saleTen.addDetail(detalleTenE);
+    saleTen.addDetail(detalleTenF);
+    saleTen.addDetail(detalleTenG);
+    saleTen.addDetail(detalleTenH);
+    SaleService.getInstance().update(saleTen);
 
     //#region trycatch de sales (para el FOLD de vscode)
-    try { SaleService.getInstance().insert(saleOne);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
+
     try { SaleDetailService.getInstance().insert(detalleOne);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleTwo);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleTwoA);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleTwoB);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleThree);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleThree);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleFour);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleFour);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleFive);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleFiveA);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleFiveB);
@@ -308,8 +355,6 @@ public class MongoDBCDemo {
     try { SaleDetailService.getInstance().insert(detalleFiveC);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleSix);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleSixA);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleSixB);
@@ -319,27 +364,20 @@ public class MongoDBCDemo {
     try { SaleDetailService.getInstance().insert(detalleSixD);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleSeven);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleSevenA);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleSevenB);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleEight);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleEight);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleNine);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleNineA);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleNineB);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
-    try { SaleService.getInstance().insert(saleTen);
-    } catch (MongoWriteException e) {System.out.println(e.getMessage());}
+    
     try { SaleDetailService.getInstance().insert(detalleTenA);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     try { SaleDetailService.getInstance().insert(detalleTenB);
@@ -364,54 +402,5 @@ public class MongoDBCDemo {
       System.out.println(e.getMessage());
     }
 
-    
-    /* No implementado
-    try {
-      System.out.println(ClientService.getInstance().exportAll(true));
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-    */
-
-    /*
-    //#region export
-    try {
-      System.out.println(AddressService.getInstance().exportAll(true));
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-
-    try {
-      System.out.println(StoreService.getInstance().exportAll(true));
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-
-    try {
-      System.out.println(EmployeeService.getInstance().exportAll(true));
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-
-    try {
-      System.out.println(ItemService.getInstance().exportAll(true));
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-
-    try {
-      System.out.println(SaleService.getInstance().exportAll(true));
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-
-    try {
-      System.out.println(SaleDetailService.getInstance().exportAll(true));
-    } catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
-    //#endregion
-    */
-    
   }
 }

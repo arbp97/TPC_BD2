@@ -27,6 +27,8 @@ public class StoreService {
       storeService = new StoreService();
     }
 
+    storeService.createUniqueIndex();
+
     return storeService;
   }
 
@@ -39,8 +41,8 @@ public class StoreService {
     BasicDBObject obj = new BasicDBObject();
 
     //se cargan los campos sobre los cuales el index va a chequear
-    obj.put("date", 1);
-    obj.put("ticketNumber", 1);
+    obj.put("address", 1);
+    obj.put("pointOfSaleCode", 1);
 
     StoreCollection.createIndex(obj, new IndexOptions().unique(true));
   }
@@ -56,7 +58,12 @@ public class StoreService {
 
   public void update(Store store) {
 
-    StoreCollection.updateOne(Filters.eq("_id", store.getId()), Updates.set("employees", store.getEmployees()));
+    StoreCollection.updateOne(Filters.eq("_id", store.getId()),
+    Updates.combine(
+      Updates.set("employees", store.getEmployees()),
+      Updates.set("address", store.getAddress()),
+      Updates.set("pointOfSaleCode", store.getPointOfSaleCode())
+    ));
   }
 
   public List<Store> findAll() {

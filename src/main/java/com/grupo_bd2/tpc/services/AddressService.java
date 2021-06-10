@@ -26,6 +26,8 @@ public class AddressService {
       addressService = new AddressService();
     }
 
+    addressService.createUniqueIndex();
+
     return addressService;
   }
 

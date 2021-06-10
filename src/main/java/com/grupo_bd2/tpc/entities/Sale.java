@@ -17,6 +17,7 @@ public class Sale {
   private ObjectId id;
   private Employee salesman;
   private Employee cashier;
+  private Person client;
   private LocalDateTime date;
   private long ticketNumber;
   private float total;
@@ -26,8 +27,9 @@ public class Sale {
   public Sale() {
   }
 
-  public Sale(Employee salesman, Employee cashier, LocalDateTime date, long ticketNumber, String paymentMethod) {
+  public Sale(Person client, Employee salesman, Employee cashier, LocalDateTime date, long ticketNumber, String paymentMethod) {
 
+    this.client = client;
     this.salesman = salesman;
     this.cashier = cashier;
     this.date = date;
@@ -43,6 +45,14 @@ public class Sale {
 
   public void setId(ObjectId id) {
     this.id = id;
+  }
+
+  public Person getClient() {
+    return this.client;
+  }
+
+  public void setClient(Person client) {
+    this.client = client;
   }
 
   public Employee getSalesman() {
@@ -104,6 +114,23 @@ public class Sale {
   public String toString() {
     Gson gson = new Gson();
     return gson.toJson(this);
+  }
+
+  private float calculateTotal() {
+
+    for(SaleDetail d : details) {
+
+      this.total = total + d.getTotal();
+    }
+
+    return this.total;
+  }
+
+  public void addDetail(SaleDetail saleDetail) {
+
+    this.details.add(saleDetail);
+
+    calculateTotal();
   }
 
 }
