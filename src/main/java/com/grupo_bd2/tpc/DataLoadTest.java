@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class MongoDBCDemo {
+public class DataLoadTest {
   public static void main(String[] args) {
     //Java-MongoDB connection
 
