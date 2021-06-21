@@ -81,7 +81,7 @@ public class SaleService {
     return saleList;
   }
 
-  public String firstReport(LocalDate date_1, LocalDate date_2) {
+  public String thirdReport(LocalDate date_1, LocalDate date_2) {
 
     List<Document> report = new ArrayList<Document>();
     double totalGeneral = 0;
@@ -109,6 +109,45 @@ public class SaleService {
           if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)) {
 
             totalSucursal = totalSucursal + sale.getTotal();
+          }
+        }
+      }
+
+      report.add(new Document(store.getAddress().getStreet()+" "+store.getAddress().getNumber(), totalSucursal));
+      totalSucursal = 0;
+    }
+
+    return gson.toJson(report);
+  }
+
+  public String firstReport(LocalDate date_1, LocalDate date_2) {
+
+    List<Document> report = new ArrayList<Document>();
+    double totalGeneral = 0;
+    double totalSucursal = 0;
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+
+    for (Sale sale : findAll()) { //total de todas las sucursales
+
+      if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)) {
+
+        totalGeneral = totalGeneral + 1;
+      }
+    }
+
+    report.add(new Document("TOTAL DE SUCURSALES", totalGeneral));
+
+    for(Store store : StoreService.getInstance().findAll()) { //total por sucursal
+
+      for(Sale sale : findAll()) {
+
+        if(sale.getSalesman().getStore().equals(store.getId())) {
+
+          if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)) {
+
+            totalSucursal = totalSucursal + 1;
           }
         }
       }
