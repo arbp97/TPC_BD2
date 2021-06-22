@@ -158,6 +158,50 @@ public class SaleService {
 
     return gson.toJson(report);
   }
+  
+  
+  public String secondReport (LocalDate date_1, LocalDate date_2) {
+
+    List<Document> report = new ArrayList<Document>();
+    double totalObraSocial = 0;
+    double totalPrivado = 0;
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+    for(Store store : StoreService.getInstance().findAll()) { 
+
+      for(Sale sale : findAll()) {
+
+        if(sale.getClient().getIsurance().equals(Insurace.getIInsuraceCode())) {
+
+          if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)) {
+
+            totalObraSocial = totalObraSocial + 1;
+          }
+        }
+      }
+
+      report.add(new Document(store.getClient().getInsurace()), totalObraSocial));
+      totalObraSocial = 0;
+    }
+    for(Store store : StoreService.getInstance().findAll()) { 
+
+      for(Sale sale : findAll()) {
+
+        if(sale.getClient().getIsurance().getIInsuraceCode()) == null) {
+
+          if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)) {
+
+            totalPrivado = totalPrivado + 1;
+          }
+        }
+      }
+
+      report.add(new Document(store.getClient().getInsurace()), totalPrivado));
+      }
+    return gson.toJson(report);
+  }
+  
 
   public String exportAll(Boolean write) throws IOException {
 
