@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
 import com.grupo_bd2.tpc.entities.Insurance;
 import com.grupo_bd2.tpc.entities.Item;
+import com.grupo_bd2.tpc.entities.Person;
 import com.grupo_bd2.tpc.entities.Sale;
 import com.grupo_bd2.tpc.entities.SaleDetail;
 import com.grupo_bd2.tpc.entities.Store;
@@ -322,6 +323,33 @@ public class SaleService {
       auxDoc.clear();
 
     }// for item
+
+    return gson.toJson(report);
+  }
+
+  public String thirdRanking() {
+
+    List<Document> report = new ArrayList<Document>();
+    Document auxDoc = new Document();
+    double cantVenta = 0;
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+
+    for(Person client : PersonService.getInstance().findAll()) {
+
+      for(Sale sale : findAll()) {
+
+        if(sale.getClient().getDni() == client.getDni()) {
+
+          cantVenta = cantVenta +1;
+        }
+
+      }
+
+      report.add(new Document(client.getName()+" "+client.getDni(), cantVenta));
+      cantVenta = 0;
+    }
 
     return gson.toJson(report);
   }

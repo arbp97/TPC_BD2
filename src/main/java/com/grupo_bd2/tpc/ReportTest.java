@@ -25,6 +25,9 @@ public class ReportTest {
 
         System.out.println("SEGUNDO RANKING\n");
         System.out.println(SaleService.getInstance().secondRanking());
+
+        System.out.println("TERCER RANKING\n");
+        System.out.println(SaleService.getInstance().thirdRanking());
     }
 
 }
