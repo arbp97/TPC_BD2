@@ -28,6 +28,9 @@ public class ReportTest {
 
         System.out.println("TERCER RANKING\n");
         System.out.println(SaleService.getInstance().thirdRanking());
+
+        System.out.println("CUARTO RANKING\n");
+        System.out.println(SaleService.getInstance().fourthRanking());
     }
 
 }

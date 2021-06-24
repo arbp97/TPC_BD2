@@ -327,10 +327,44 @@ public class SaleService {
     return gson.toJson(report);
   }
 
-  public String thirdRanking() {
+  public String fourthRanking() {
 
     List<Document> report = new ArrayList<Document>();
     Document auxDoc = new Document();
+    double cantVenta = 0;
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+
+    for(Person client : PersonService.getInstance().findAll()) {
+
+      auxDoc.put(client.getName()+" "+client.getSurname()+" "+client.getDni(), "COMPRAS X SUCURSAL");
+
+      for(Store store : StoreService.getInstance().findAll()) {
+
+        for(Sale sale : findAll()) {
+
+          if((sale.getClient().getDni() == client.getDni()) && (sale.getSalesman().getStore().equals(store.getId()))) {
+
+            cantVenta = cantVenta +1;
+          }
+
+        }
+
+        auxDoc.append(store.getAddress().getStreet()+" "+store.getAddress().getNumber(), cantVenta);
+        cantVenta = 0;
+      }
+
+      report.add(new Document(auxDoc));
+      auxDoc.clear();
+    }
+
+    return gson.toJson(report);
+  }
+
+  public String thirdRanking() {
+
+    List<Document> report = new ArrayList<Document>();
     double cantVenta = 0;
     Gson gson = new GsonBuilder()
         .setPrettyPrinting()
