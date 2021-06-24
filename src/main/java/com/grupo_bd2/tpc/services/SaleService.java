@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
 import com.grupo_bd2.tpc.entities.Insurance;
+import com.grupo_bd2.tpc.entities.Item;
 import com.grupo_bd2.tpc.entities.Sale;
 import com.grupo_bd2.tpc.entities.SaleDetail;
 import com.grupo_bd2.tpc.entities.Store;
@@ -233,6 +234,50 @@ public class SaleService {
     }
     report.add(new Document("CANTIDAD DE VENTAS AGRUPADAS POR PERFUMERIA:", cantVentasPerfumeria));
     report.add(new Document("CANTIDAD DE VENTAS AGRUPADAS POR MEDICAMENTO", cantVentasMedicine));
+
+    return gson.toJson(report);
+  }
+
+  public String firstRanking() {
+
+    List<Document> report = new ArrayList<Document>();
+    Document auxDoc = new Document();
+    double montoVendido = 0;
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+
+    for(Item item : ItemService.getInstance().findAll()) {
+
+      auxDoc.put(item.getDescription(), "MONTO VENDIDO");
+
+      for(Store store : StoreService.getInstance().findAll()) {
+
+        for(Sale sale : findAll()) {
+
+          if(sale.getSalesman().getStore().equals(store.getId())) {
+
+            for(SaleDetail detail : sale.getDetails()) {
+
+              if(detail.getItem().getDescription().equals(item.getDescription())) {
+
+                montoVendido = montoVendido + detail.getTotal();
+              }
+            }
+          }
+
+        }// for sale
+
+        auxDoc.append(store.getAddress().getStreet()+" "+store.getAddress().getNumber(), montoVendido);
+
+        montoVendido = 0;
+
+      }// for store
+      //System.out.println(gson.toJson(auxDoc));
+      report.add(new Document(auxDoc));
+      auxDoc.clear();
+
+    }// for item
 
     return gson.toJson(report);
   }
