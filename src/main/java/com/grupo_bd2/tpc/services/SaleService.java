@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
 import com.grupo_bd2.tpc.entities.Sale;
+import com.grupo_bd2.tpc.entities.SaleDetail;
 import com.grupo_bd2.tpc.entities.Store;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
@@ -159,7 +160,7 @@ public class SaleService {
     return gson.toJson(report);
   }
   
-  
+
   public String secondReport (LocalDate date_1, LocalDate date_2) {
 
     List<Document> report = new ArrayList<Document>();
@@ -168,7 +169,7 @@ public class SaleService {
     Gson gson = new GsonBuilder()
         .setPrettyPrinting()
         .create();
-    for(Store store : StoreService.getInstance().findAll()) { 
+    for(Store store : StoreService.getInstance().findAll()) {
 
       for(Sale sale : findAll()) {
 
@@ -184,7 +185,7 @@ public class SaleService {
       report.add(new Document(store.getClient().getInsurace()), totalObraSocial));
       totalObraSocial = 0;
     }
-    for(Store store : StoreService.getInstance().findAll()) { 
+    for(Store store : StoreService.getInstance().findAll()) {
 
       for(Sale sale : findAll()) {
 
@@ -201,7 +202,41 @@ public class SaleService {
       }
     return gson.toJson(report);
   }
-  
+
+
+  public String FourReport(LocalDate date_1, LocalDate date_2) {
+    List<Document> report = new ArrayList<Document>();
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+
+    List<Sale> listStore = findAll();
+    int cantVentasMedicine = 0;
+    int cantVentasPerfumeria = 0;
+
+    for (Sale sale : listStore) {
+      if ((sale.getDate().toLocalDate().equals(date_1)) || sale.getDate().toLocalDate().isAfter(date_1)
+          && (sale.getDate().toLocalDate().isBefore(date_2) || sale.getDate().toLocalDate().equals(date_2))) {
+        boolean isMedicine = false;
+        for (SaleDetail saleDetail :
+            sale.getDetails()) {
+          if (saleDetail.getItem().getIsMedicine()) {
+            isMedicine = true;
+          }
+        }
+        if (isMedicine) {
+          cantVentasMedicine = cantVentasMedicine + 1;
+        } else {
+          cantVentasPerfumeria = cantVentasPerfumeria + 1;
+        }
+      }
+
+    }
+    report.add(new Document("CANTIDAD DE VENTAS AGRUPADAS POR PERFUMERIA:", cantVentasPerfumeria));
+    report.add(new Document("CANTIDAD DE VENTAS AGRUPADAS POR MEDICAMENTO", cantVentasMedicine));
+
+    return gson.toJson(report);
+  }
 
   public String exportAll(Boolean write) throws IOException {
 

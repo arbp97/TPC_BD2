@@ -5,10 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
 import com.grupo_bd2.tpc.entities.*;
 import com.grupo_bd2.tpc.services.*;
-import com.mongodb.BasicDBObject;
 import com.mongodb.MongoWriteException;
-
-import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -67,7 +64,7 @@ public class DataLoadTest {
     }
 
     Insurance insurance1 = new Insurance("OSDE","456781");
-    Insurance insurance2 = new Insurance("JAJA","424344");
+    Insurance insurance2 = new Insurance("SWISS MEDICAL","424344");
 
     try {
       InsuranceService.getInstance().insert(insurance1);
@@ -81,10 +78,10 @@ public class DataLoadTest {
     }
 
     // Person(Address address, int dni, String name, String surname, Insurance insurance, String affiliateNumber)
-    Person client = new Person(addressOne, 12345678, "Hello", "Moto", null, null);
-    Person client2 = new Person(addressOne, 87654321, "Bye", "Auto", insurance1, "123");
-    Person client3 = new Person(addressSix, 00000001, "John", "Firstman", insurance2, "30");
-    Person client4 = new Person(addressFour, 34566543, "Minecraft", "Terraria", null, null);
+    Person client = new Person(addressOne, 12345678, "Nicolas", "Gonzalez", null, null);
+    Person client2 = new Person(addressOne, 36654321, "Javier", "Alvarez", insurance1, "123");
+    Person client3 = new Person(addressSix, 23569254, "Paula", "Godoy", insurance2, "30");
+    Person client4 = new Person(addressFour, 34566543, "Micaela", "Muñoz", null, null);
 
 
     try {
@@ -127,8 +124,8 @@ public class DataLoadTest {
         "Juan", "Perez", insurance1, "23021015");
     Employee employeeTwo = new Employee(addressThree, storeOne.getId(), false, "23193265120", 19326512,
         "Pablo", "Rodriguez", insurance1, "3320120");
-    Employee employeeThree = new Employee(addressOne, storeTwo.getId(), false, "23131415160", 13141516, "Gabe", "Newell", null, null);
-    Employee employeeFour = new Employee(addressFive, storeTwo.getId(), false, "23422456320", 42245632, "Axel", "Madagascar", insurance2, "6300");
+    Employee employeeThree = new Employee(addressOne, storeTwo.getId(), false, "23131415160", 13141516, "Gabriel", "Coronel", null, null);
+    Employee employeeFour = new Employee(addressFive, storeTwo.getId(), false, "23422456320", 42245632, "Axel", "Dominguez", insurance2, "6300");
 
 
     try {
@@ -171,8 +168,8 @@ public class DataLoadTest {
     Item itemTwo = new Item("Adermicina", 650f, "Elea", false);
     Item itemThree = new Item("Actron", 365f, "Bayer", true);
     Item itemFour = new Item("Half-Life", 600f, "Valve", false);
-    Item itemFive = new Item("Ibuprofeno 0.1g", 1f, "Pfizer creo", true);
-    Item itemSix = new Item("Actimel", 101f, "Lase Renisima", false);
+    Item itemFive = new Item("Ibuprofeno 0.1g", 1f, "Elea", true);
+    Item itemSix = new Item("Actimel", 101f, "Valve", false);
     Item itemSeven = new Item("VapoRub", 240f, "Vicks", true);
     listItem.add(itemOne);
     listItem.add(itemTwo);
@@ -231,14 +228,16 @@ public class DataLoadTest {
     Sale saleOne = new Sale();
     SaleDetail detalleOne = new SaleDetail();
     try {
-      saleOne = SaleService.getInstance().insert(new Sale(client,employeeThree, employeeThree, LocalDateTime.now(), 2, "Bisa"));
+      saleOne = SaleService.getInstance().insert(new Sale(client,employeeThree, employeeThree, LocalDateTime.now(),
+          2, "Visa"));
       detalleOne = new SaleDetail(saleOne.getId(), itemFour, 1);
       saleOne.addDetail(detalleOne);
       SaleService.getInstance().update(saleOne);
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
 
     Sale saleTwo = new Sale();
-    try {saleTwo = SaleService.getInstance().insert(new Sale(client,employeeOne, employeeTwo, LocalDateTime.now().minusDays(1), 6, "Santander Rie"));
+    try {saleTwo = SaleService.getInstance().insert(new Sale(client,employeeOne, employeeTwo, LocalDateTime.now().minusDays(1),
+        6, "Santander Rio"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleTwoA = new SaleDetail(saleTwo.getId(), itemTwo, 3);
     SaleDetail detalleTwoB = new SaleDetail(saleTwo.getId(), itemSix, 6);
@@ -247,21 +246,24 @@ public class DataLoadTest {
     SaleService.getInstance().update(saleTwo);
 
     Sale saleThree = new Sale();
-    try {saleThree = SaleService.getInstance().insert(new Sale(client2,employeeThree, employeeFour, LocalDateTime.now().minusWeeks(2), 5, "Mercado Pago"));
+    try {saleThree = SaleService.getInstance().insert(new Sale(client2,employeeThree, employeeFour, LocalDateTime.now().minusWeeks(2),
+        5, "Mercado Pago"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleThree = new SaleDetail(saleThree.getId(), itemOne, 12);
     saleThree.addDetail(detalleThree);
     SaleService.getInstance().update(saleThree);
 
     Sale saleFour = new Sale();
-    try {saleFour = SaleService.getInstance().insert(new Sale(client2,employeeThree, employeeFour, LocalDateTime.now().minusWeeks(2), 44, "Huesitos de pollo"));
+    try {saleFour = SaleService.getInstance().insert(new Sale(client2,employeeThree, employeeFour, LocalDateTime.now().minusWeeks(2),
+        44, "Visa"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleFour = new SaleDetail(saleFour.getId(), itemSeven, 2);
     saleFour.addDetail(detalleFour);
     SaleService.getInstance().update(saleFour);
 
     Sale saleFive = new Sale();
-    try {saleFive = SaleService.getInstance().insert(new Sale(client3,employeeTwo, employeeOne, LocalDateTime.now().plusDays(1), 45, "Futurepay"));
+    try {saleFive = SaleService.getInstance().insert(new Sale(client3,employeeTwo, employeeOne, LocalDateTime.now().plusDays(1),
+        45, "Mastercard"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleFiveA = new SaleDetail(saleFive.getId(), itemSix, 1);
     SaleDetail detalleFiveB = new SaleDetail(saleFive.getId(), itemSix, 2);
@@ -272,7 +274,8 @@ public class DataLoadTest {
     SaleService.getInstance().update(saleFive);
 
     Sale saleSix = new Sale();
-    try {saleSix = SaleService.getInstance().insert(new Sale(client3,employeeTwo, employeeTwo, LocalDateTime.now().minusMinutes(24), 47, "Drogiscard"));
+    try {saleSix = SaleService.getInstance().insert(new Sale(client3,employeeTwo, employeeTwo, LocalDateTime.now().minusMinutes(24),
+        47, "Mastercard"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleSixA = new SaleDetail(saleSix.getId(), itemOne, 3);
     SaleDetail detalleSixB = new SaleDetail(saleSix.getId(), itemThree, 5);
@@ -285,7 +288,8 @@ public class DataLoadTest {
     SaleService.getInstance().update(saleSix);
 
     Sale saleSeven = new Sale();
-    try {saleSeven = SaleService.getInstance().insert(new Sale(client3,employeeFour, employeeFour, LocalDateTime.now(), 49, "Tarjeta generica #4"));
+    try {saleSeven = SaleService.getInstance().insert(new Sale(client3,employeeFour, employeeFour, LocalDateTime.now(),
+        49, "Mercado Pago"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleSevenA = new SaleDetail(saleSeven.getId(), itemThree, 1);
     SaleDetail detalleSevenB = new SaleDetail(saleSeven.getId(), itemOne, 5000);
@@ -295,7 +299,7 @@ public class DataLoadTest {
 
     Sale saleEight = new Sale();
     try {saleEight = SaleService.getInstance().insert(new Sale(client4,employeeOne, employeeOne, 
-      LocalDateTime.now(), 51, "Lamborghini Aventador LP 750-4 Superveloce Roadster"));
+      LocalDateTime.now(), 51, "Visa"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleEight = new SaleDetail(saleEight.getId(), itemSeven, 92);
     saleEight.addDetail(detalleEight);
@@ -303,7 +307,7 @@ public class DataLoadTest {
 
     Sale saleNine = new Sale();
      try {saleNine = SaleService.getInstance().insert(new Sale(client4,employeeOne, employeeTwo,
-      LocalDateTime.now(), 55, "Apreta ALT+F4 para deshabilitar chequeo de errores"));
+      LocalDateTime.now(), 55, "Mastercard"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleNineA = new SaleDetail(saleNine.getId(), itemTwo, 32);
     SaleDetail detalleNineB = new SaleDetail(saleNine.getId(), itemThree, 12);
@@ -312,7 +316,7 @@ public class DataLoadTest {
     SaleService.getInstance().update(saleNine);
 
     Sale saleTen = new Sale();
-    try {saleTen = SaleService.getInstance().insert(new Sale(client4,employeeFour, employeeThree, LocalDateTime.now(), 60, "Noma Meswey"));
+    try {saleTen = SaleService.getInstance().insert(new Sale(client4,employeeFour, employeeThree, LocalDateTime.now(), 60, "Visa"));
     } catch (MongoWriteException e) {System.out.println(e.getMessage());}
     SaleDetail detalleTenA = new SaleDetail(saleTen.getId(), itemOne, 2);
     SaleDetail detalleTenB = new SaleDetail(saleTen.getId(), itemTwo, 4);
