@@ -172,34 +172,29 @@ public class SaleService {
     for(Store store : StoreService.getInstance().findAll()) {
 
       for(Sale sale : findAll()) {
-
-        if(sale.getClient().getIsurance().equals(Insurace.getIInsuraceCode())) {
-
-          if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)) {
-
-            totalObraSocial = totalObraSocial + 1;
-          }
-        }
+  
+         if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)){
+           
+           if(sale.getClient().getIsurance().getIInsuraceCode()) == null) {
+             
+             totalPrivado = totalPrivado + 1;
+             
+             else{
+            
+              if(sale.getClient().getIsurance().equals(Insurace.getIInsuraceCode())) {
+                
+                totalObraSocial = totalObraSocial + 1;
+              }
+             }
+           }
+         }
       }
-
+    
       report.add(new Document(store.getClient().getInsurace()), totalObraSocial));
       totalObraSocial = 0;
-    }
-    for(Store store : StoreService.getInstance().findAll()) {
-
-      for(Sale sale : findAll()) {
-
-        if(sale.getClient().getIsurance().getIInsuraceCode()) == null) {
-
-          if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)) {
-
-            totalPrivado = totalPrivado + 1;
-          }
-        }
-      }
-
       report.add(new Document(store.getClient().getInsurace()), totalPrivado));
-      }
+    
+    }
     return gson.toJson(report);
   }
 
