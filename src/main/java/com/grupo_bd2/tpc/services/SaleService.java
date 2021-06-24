@@ -3,6 +3,7 @@ package com.grupo_bd2.tpc.services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grupo_bd2.tpc.config.Config;
+import com.grupo_bd2.tpc.entities.Insurance;
 import com.grupo_bd2.tpc.entities.Sale;
 import com.grupo_bd2.tpc.entities.SaleDetail;
 import com.grupo_bd2.tpc.entities.Store;
@@ -159,47 +160,50 @@ public class SaleService {
 
     return gson.toJson(report);
   }
-  
 
   public String secondReport (LocalDate date_1, LocalDate date_2) {
 
     List<Document> report = new ArrayList<Document>();
     double totalObraSocial = 0;
     double totalPrivado = 0;
+    boolean isPrivadoDone = false;
     Gson gson = new GsonBuilder()
         .setPrettyPrinting()
         .create();
-    for(Store store : StoreService.getInstance().findAll()) {
+
+    for(Insurance insurance : InsuranceService.getInstance().findAll()) {
 
       for(Sale sale : findAll()) {
-  
-         if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)){
-           
-           if(sale.getClient().getIsurance().getIInsuraceCode()) == null) {
-             
-             totalPrivado = totalPrivado + 1;
-             
-             else{
-            
-              if(sale.getClient().getIsurance().equals(Insurace.getIInsuraceCode())) {
-                
-                totalObraSocial = totalObraSocial + 1;
-              }
-             }
-           }
-         }
+
+        if(sale.getDate().toLocalDate().isAfter(date_1) && sale.getDate().toLocalDate().isBefore(date_2)) {
+
+          if(sale.getClient().getInsurance() != null) {
+
+            if(sale.getClient().getInsurance().getInsuranceCode().equals(insurance.getInsuranceCode())) {
+
+              totalObraSocial = totalObraSocial + 1;
+            }
+          } else if(!isPrivadoDone) {
+
+            totalPrivado = totalPrivado + 1;
+          }
+        }
+
       }
-    
-      report.add(new Document(store.getClient().getInsurace()), totalObraSocial));
+
+      report.add(new Document(insurance.getName()+": ", totalObraSocial));
+      isPrivadoDone = true;
       totalObraSocial = 0;
-      report.add(new Document(store.getClient().getInsurace()), totalPrivado));
-    
+
     }
+
+    report.add(new Document("PRIVADO: ", totalPrivado));
+
     return gson.toJson(report);
   }
 
 
-  public String FourReport(LocalDate date_1, LocalDate date_2) {
+  public String FourthReport(LocalDate date_1, LocalDate date_2) {
     List<Document> report = new ArrayList<Document>();
     Gson gson = new GsonBuilder()
         .setPrettyPrinting()

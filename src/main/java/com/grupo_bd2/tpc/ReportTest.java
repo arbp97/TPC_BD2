@@ -8,13 +8,17 @@ public class ReportTest {
 
     public static void main(String[] args) {
 
+        System.out.println("PRIMER REPORTE\n");
         System.out.println(SaleService.getInstance().firstReport(LocalDate.of(2021, 06, 9), LocalDate.of(2021, 06, 12)));
 
+        System.out.println("SEGUNDO REPORTE\n");
+        System.out.println(SaleService.getInstance().secondReport(LocalDate.of(2020, 06, 9), LocalDate.of(2021, 12, 12)));
+
+        System.out.println("TERCER REPORTE\n");
         System.out.println(SaleService.getInstance().thirdReport(LocalDate.of(2021, 06, 9), LocalDate.of(2021, 06, 12)));
 
-        System.out.println(SaleService.getInstance().secondReport(LocalDate.of(2021, 06, 9), LocalDate.of(2021, 06, 12)));
-
-        System.out.println(SaleService.getInstance().FourReport(LocalDate.of(2021, 06, 15), LocalDate.of(2021, 06, 23)));
+        System.out.println("CUARTO REPORTE\n");
+        System.out.println(SaleService.getInstance().FourthReport(LocalDate.of(2020, 06, 9), LocalDate.of(2021, 06, 30)));
     }
 
 }
