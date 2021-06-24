@@ -273,7 +273,51 @@ public class SaleService {
         montoVendido = 0;
 
       }// for store
-      //System.out.println(gson.toJson(auxDoc));
+
+      report.add(new Document(auxDoc));
+      auxDoc.clear();
+
+    }// for item
+
+    return gson.toJson(report);
+  }
+
+  public String secondRanking() {
+
+    List<Document> report = new ArrayList<Document>();
+    Document auxDoc = new Document();
+    double cantVendida = 0;
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+
+    for(Item item : ItemService.getInstance().findAll()) {
+
+      auxDoc.put(item.getDescription(), "CANTIDAD VENDIDA");
+
+      for(Store store : StoreService.getInstance().findAll()) {
+
+        for(Sale sale : findAll()) {
+
+          if(sale.getSalesman().getStore().equals(store.getId())) {
+
+            for(SaleDetail detail : sale.getDetails()) {
+
+              if(detail.getItem().getDescription().equals(item.getDescription())) {
+
+                cantVendida = cantVendida + detail.getQuantity();
+              }
+            }
+          }
+
+        }// for sale
+
+        auxDoc.append(store.getAddress().getStreet()+" "+store.getAddress().getNumber(), cantVendida);
+
+        cantVendida = 0;
+
+      }// for store
+
       report.add(new Document(auxDoc));
       auxDoc.clear();
 
